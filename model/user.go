@@ -14,9 +14,9 @@ type User struct {
 	Jeniskelamin string        `form:"Jeniskelamin" json:"Jeniskelamin"`
 	Asalnegara   string        `form:"Asalnegara" json:"Asalnegara"`
 	Usertype     int           `form:"Usertype" json:"Usertype"`
-	Usermember   string        `form:"Usermember" json:"Usermember"`
+	Block        int           `form:"block" json:"block"`
 	RiwayatUsers []RiwayatUser `gorm:"foreignKey:UserId"`
-	Langganan    Langganan     `gorm:"foreignKey:IdUser"`
+	IdLangganan  int           `form:"idlangganan" json:"idlangganan"`
 }
 
 type UserResponse struct {
