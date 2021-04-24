@@ -33,7 +33,9 @@ func main() {
 
 	router.HandleFunc("/riwayatuser", controller.Authenticate(controller.GetRiwayatUser, 1)).Methods("GET")
 
-	fmt.Println("Connected to port 8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	router.HandleFunc("/langganan", controller.Authenticate(controller.InsertLangganan, 1)).Methods("GET")
+
+	fmt.Println("Connected to port 9099")
+	log.Fatal(http.ListenAndServe(":9099", router))
 
 }
