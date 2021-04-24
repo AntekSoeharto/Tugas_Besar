@@ -35,7 +35,6 @@ func Migrate() {
 	//Close() method, unsupperted since GORM v2
 	//defer db.Close
 
-	_ = db.AutoMigrate(&User{}, &Film{}, &DaftarPemain{})
-	db.Migrator().RenameTable("dafter_pemains", "daftar_pemains")
+	_ = db.AutoMigrate(&User{}, &Film{})
 
 }

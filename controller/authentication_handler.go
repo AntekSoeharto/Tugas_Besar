@@ -56,7 +56,6 @@ func resetUsersToken(w http.ResponseWriter) {
 }
 
 func Authenticate(next http.HandlerFunc, accessType int) http.HandlerFunc {
-	fmt.Println(accessType)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		isValidToken := validateUserToken(w, r, accessType)
 		fmt.Println(accessType)
@@ -69,7 +68,6 @@ func Authenticate(next http.HandlerFunc, accessType int) http.HandlerFunc {
 }
 
 func validateUserToken(w http.ResponseWriter, r *http.Request, accessType int) bool {
-	fmt.Println(accessType)
 	isAccessTokenValid, id, email, userType := validateTokenFromCookies(r)
 	fmt.Println(id, email, userType, accessType, isAccessTokenValid)
 
@@ -91,7 +89,6 @@ func validateTokenFromCookies(r *http.Request) (bool, int, string, int) {
 		})
 		if err == nil && parsedToken.Valid {
 			return true, accessClaims.ID, accessClaims.Name, accessClaims.UserType
-			fmt.Println(accessClaims.UserType)
 		}
 	}
 	return false, -1, "", -1

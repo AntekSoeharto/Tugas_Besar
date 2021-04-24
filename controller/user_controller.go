@@ -139,6 +139,29 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func TangguhkanMember(w http.ResponseWriter, r *http.Request) {
+	db := connect()
+	//defer db.Close()
+
+	err := r.ParseForm()
+	if err != nil {
+		return
+	}
+
+	email := r.Form.Get("email")
+
+	query := db.Model(model.User{}).Where("email = ?", email).Updates(model.User{Usermember: "Ditangguhkan"})
+
+	var response model.UserResponse
+	if query.Error == nil {
+		response.Status = 400
+		response.Message = "Gagal Menangguhkan Member"
+	} else {
+		response.Status = 200
+		response.Message = "Berhasil Ditangguhkan"
+	}
+}
+
 func sendUnAuthorizedResponse(w http.ResponseWriter) {
 	var response model.UserResponse
 	response.Status = 401
