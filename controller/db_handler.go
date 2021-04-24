@@ -35,6 +35,6 @@ func Migrate() {
 	//Close() method, unsupperted since GORM v2
 	//defer db.Close
 
-	_ = db.AutoMigrate(&User{}, &Film{})
+	_ = db.AutoMigrate(&User{}, &Film{}, &RiwayatUser{})
 
 }
