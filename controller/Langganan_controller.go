@@ -12,6 +12,7 @@ import (
 
 func InsertLangganan(w http.ResponseWriter, r *http.Request) {
 	db := connect()
+
 	//defer db.Close()
 
 	err := r.ParseForm()
