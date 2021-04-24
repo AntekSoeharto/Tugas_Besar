@@ -7,17 +7,15 @@ import (
 	"time"
 
 	"github.com/Tugas_Besar/model"
-	"github.com/gorilla/mux"
 )
 
 func GetRiwayatUser(w http.ResponseWriter, r *http.Request) {
 	db := connect()
 
 	var riwayatUsers []model.RiwayatUser
-	vars := mux.Vars(r) // Get User ID from URL
 
 	// Get RiwayatUser Query
-	if err := db.Find(&riwayatUsers).Where("iduser = ?", vars["userId"]).Error; err != nil {
+	if err := db.Find(&riwayatUsers).Where("iduser = ?", getid(r)).Error; err != nil {
 		sendResponse(w, 400, "Failed to Query", nil)
 	} else if len(riwayatUsers) == 0 {
 		sendResponse(w, 204, "Not Found, No Content", nil)
@@ -34,12 +32,11 @@ func InsertRiwayatUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, _ := strconv.Atoi(r.Form.Get("userId"))
 	filmId, _ := strconv.Atoi(r.Form.Get("filmId"))
 
 	riwayatUser := model.RiwayatUser{
 		Tanggal: time.Now().UTC(),
-		UserId:  userId,
+		UserId:  getid(r),
 		FilmId:  filmId,
 	}
 

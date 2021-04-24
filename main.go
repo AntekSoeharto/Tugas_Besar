@@ -31,6 +31,8 @@ func main() {
 	router.HandleFunc("/users", controller.Authenticate(controller.UpdateProfile, 1)).Methods("PUT")
 	router.HandleFunc("/films", controller.Authenticate(controller.FindFilms, 1)).Methods("GET")
 
+	router.HandleFunc("/riwayatuser", controller.Authenticate(controller.GetRiwayatUser, 1)).Methods("GET")
+
 	fmt.Println("Connected to port 8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
 
