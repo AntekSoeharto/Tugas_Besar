@@ -61,7 +61,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	jeniskelamin := r.Form.Get("jeniskelamin")
 	asalnegara := r.Form.Get("asalnegara")
 	usertype := 1
-	usermember := r.Form.Get("usermember")
 
 	// Set inputted data to object
 	user := model.User{
@@ -72,7 +71,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		Jeniskelamin: jeniskelamin,
 		Asalnegara:   asalnegara,
 		Usertype:     usertype,
-		Usermember:   usermember,
 	}
 
 	// Insert object to database
@@ -113,7 +111,7 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 
 	// Set response
 	var response model.UserResponse
-	if user.Usermember == "Ditangguhkan" {
+	if user.Block == 1 {
 		response.Status = 400
 		response.Message = "Akun Anda Sedang Ditangguhkan"
 	} else {
@@ -155,13 +153,13 @@ func TangguhkanMember(w http.ResponseWriter, r *http.Request) {
 
 	email := r.Form.Get("email")
 
-	db.Model(model.User{}).Where("email = ?", email).Updates(model.User{Usermember: "Ditangguhkan"})
+	db.Model(model.User{}).Where("email = ?", email).Updates(model.User{Block: 1})
 
 	var user model.User
 	db.Where("email = ?", email).First(&user)
 
 	var response model.UserResponse
-	if user.Usermember == "Ditangguhkan" {
+	if user.Block == 1 {
 		response.Status = 200
 		response.Message = "Berhasil Menangguhkan"
 	} else {
