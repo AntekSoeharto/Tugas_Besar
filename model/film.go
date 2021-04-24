@@ -14,7 +14,7 @@ type Film struct {
 	DaftarPemain string `form:"daftarpemain" json:"daftarpemain"`
 }
 
-type FIlmResponse struct {
+type FilmResponse struct {
 	Status  int    `form:"status" json:"status"`
 	Message string `form:"message" json:"message"`
 	Data    []Film `form:"data" json:"data"`

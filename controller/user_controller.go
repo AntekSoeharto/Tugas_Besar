@@ -9,7 +9,7 @@ import (
 	"github.com/Tugas_Besar/model"
 )
 
-func GetAllMember(w http.ResponseWriter, r *http.Request) {
+func GetMember(w http.ResponseWriter, r *http.Request) {
 	db := connect()
 	//defer db.Close()
 
@@ -150,16 +150,22 @@ func TangguhkanMember(w http.ResponseWriter, r *http.Request) {
 
 	email := r.Form.Get("email")
 
-	query := db.Model(model.User{}).Where("email = ?", email).Updates(model.User{Usermember: "Ditangguhkan"})
+	db.Model(model.User{}).Where("email = ?", email).Updates(model.User{Usermember: "Ditangguhkan"})
+
+	var user model.User
+	db.Where("email = ?", email).First(&user)
 
 	var response model.UserResponse
-	if query.Error == nil {
-		response.Status = 400
-		response.Message = "Gagal Menangguhkan Member"
-	} else {
+	if user.Usermember == "Ditangguhkan" {
 		response.Status = 200
-		response.Message = "Berhasil Ditangguhkan"
+		response.Message = "Berhasil Menangguhkan"
+	} else {
+		response.Status = 400
+		response.Message = "Gagal Menangguhkan"
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
 
 func sendUnAuthorizedResponse(w http.ResponseWriter) {
