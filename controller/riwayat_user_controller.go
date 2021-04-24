@@ -15,7 +15,7 @@ func GetRiwayatUser(w http.ResponseWriter, r *http.Request) {
 	var riwayatUsers []model.RiwayatUser
 
 	// Get RiwayatUser Query
-	if err := db.Find(&riwayatUsers).Where("iduser = ?", getid(r)).Error; err != nil {
+	if err := db.Where("user_id = ?", getid(r)).Find(&riwayatUsers).Error; err != nil {
 		sendResponse(w, 400, "Failed to Query", nil)
 	} else if len(riwayatUsers) == 0 {
 		sendResponse(w, 204, "Not Found, No Content", nil)
