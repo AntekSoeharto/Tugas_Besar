@@ -141,6 +141,7 @@ func UpdateFilm(w http.ResponseWriter, r *http.Request) {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{TahunRilis: tahunrilis})
 	}
 
+	db.Where("id = ?", id).First(&film)
 	var response model.FilmResponse
 	if film.Judul == judul || film.Genre == genre || film.Sutradara == sutradara || film.Filmtype == filmtype || film.Sinopsis == sinopsis || film.DaftarPemain == daftarpemain || film.TahunRilis == tahunrilis {
 		response.Status = 200
@@ -148,6 +149,62 @@ func UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	} else {
 		response.Status = 400
 		response.Message = "Failed Update Data"
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func FindFilms(w http.ResponseWriter, r *http.Request) {
+	db := connect()
+	//defer db.Close()
+
+	err := r.ParseForm()
+	if err != nil {
+		return
+	}
+
+	var films []model.Film
+
+	judul := r.Form.Get("judul")
+	sutradara := r.Form.Get("sutradara")
+	tahunrilis, _ := strconv.Atoi(r.Form.Get("tahunrilis"))
+	sinopsis := r.Form.Get("sinopsis")
+	daftarpemain := r.Form.Get("daftarpemain")
+
+	if judul != "" {
+		db.Where("judul LIKE ?", "%"+judul+"%").Find(&films)
+	} else {
+		if sutradara != "" {
+			db.Where("sutradara LIKE ?", "%"+sutradara+"%").Find(&films)
+		} else {
+			if tahunrilis != 0 {
+				db.Where("tahun_rilis = ?", tahunrilis).Find(&films)
+			} else {
+				if sinopsis != "" {
+					db.Where("sinopsis LIKE ?", "%"+sinopsis+"%").Find(&films)
+				} else {
+					if daftarpemain != "" {
+						db.Where("daftar_pemain LIKE ?", "%"+daftarpemain+"%").Find(&films)
+					} else {
+						db.Find(&films)
+					}
+				}
+			}
+		}
+	}
+
+	// Set response
+	var response model.FilmResponse
+	if len(films) > 0 {
+		// Output to console
+		response.Status = 200
+		response.Message = "Success Get Films"
+		response.Data = films
+	} else {
+		// Output to console
+		response.Status = 204
+		response.Message = "Not Found, No Content"
 	}
 
 	w.Header().Set("Content-Type", "application/json")
