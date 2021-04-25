@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -45,14 +44,4 @@ func InsertRiwayatUser(w http.ResponseWriter, r *http.Request) {
 	} else {
 		sendResponse(w, 200, "Insert Success", []model.RiwayatUser{riwayatUser})
 	}
-}
-
-func sendResponse(w http.ResponseWriter, status int, msg string, data []model.RiwayatUser) {
-	var response model.RiwayatUserResponse
-	response.Status = status
-	response.Message = msg
-	response.Data = data
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }

@@ -21,7 +21,7 @@ func InsertFilm(w http.ResponseWriter, r *http.Request) {
 	judul := r.Form.Get("judul")
 	genre := r.Form.Get("genre")
 	sutradara := r.Form.Get("sutradara")
-	filmtype := r.Form.Get("filmtype")
+	filmtype, _ := strconv.Atoi(r.Form.Get("filmtype"))
 	sinopsis := r.Form.Get("sinopsis")
 	daftarpemain := r.Form.Get("daftarpemain")
 	tahunrilis, _ := strconv.Atoi(r.Form.Get("tahunrilis"))
@@ -114,30 +114,30 @@ func UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	judul := r.Form.Get("judul")
 	genre := r.Form.Get("genre")
 	sutradara := r.Form.Get("sutradara")
-	filmtype := r.Form.Get("filmtype")
+	filmtype, _ := strconv.Atoi(r.Form.Get("filmtype"))
 	sinopsis := r.Form.Get("sinopsis")
 	daftarpemain := r.Form.Get("daftarpemain")
 	tahunrilis, _ := strconv.Atoi(r.Form.Get("tahunrilis"))
 
-	if judul != film.Judul {
+	if judul != film.Judul && judul != "" {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{Judul: judul})
 	}
-	if genre != film.Genre {
+	if genre != film.Genre && genre != "" {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{Genre: genre})
 	}
-	if sutradara != film.Sutradara {
+	if sutradara != film.Sutradara && sutradara != "" {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{Sutradara: sutradara})
 	}
-	if filmtype != film.Filmtype {
+	if filmtype != film.Filmtype && filmtype != 0 {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{Filmtype: filmtype})
 	}
-	if sinopsis != film.Sinopsis {
+	if sinopsis != film.Sinopsis && sinopsis != "" {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{Sinopsis: sinopsis})
 	}
-	if daftarpemain != film.DaftarPemain {
+	if daftarpemain != film.DaftarPemain && daftarpemain != "" {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{DaftarPemain: daftarpemain})
 	}
-	if tahunrilis != film.TahunRilis {
+	if tahunrilis != film.TahunRilis && tahunrilis != 0 {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{TahunRilis: tahunrilis})
 	}
 

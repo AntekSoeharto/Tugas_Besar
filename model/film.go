@@ -10,7 +10,7 @@ type Film struct {
 	Genre        string `form:"genre" json:"genre"`
 	Sutradara    string `form:"sutradara" json:"sutradara"`
 	Sinopsis     string `form:"sinopsis" json:"sinopsis"`
-	Filmtype     string `form:"filmtype" json:"filmtype"`
+	Filmtype     int    `form:"filmtype" json:"filmtype"`
 	DaftarPemain string `form:"daftarpemain" json:"daftarpemain"`
 }
 
