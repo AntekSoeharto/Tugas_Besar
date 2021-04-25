@@ -16,7 +16,7 @@ type User struct {
 	Usertype     int           `form:"Usertype" json:"Usertype"`
 	Block        int           `form:"block" json:"block"`
 	RiwayatUsers []RiwayatUser `gorm:"foreignKey:UserId"`
-	IdLangganan  int           `form:"idlangganan" json:"idlangganan"`
+	Langganan    Langganan     `gorm:"foreignKey:IdUser"`
 }
 
 type UserResponse struct {

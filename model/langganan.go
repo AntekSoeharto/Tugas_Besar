@@ -14,7 +14,7 @@ type Langganan struct {
 	KodeCVC      int       `form:"kodeCVC" json:"kodeCVC"`
 	TanggalHabis time.Time `form:"tanggalHabis" json:"tanggalHabis"`
 	Usermember   string    `form:"Usermember" json:"Usermember"`
-	User         User      `gorm:"foreignKey:IdLangganan"`
+	IdUser       int       `form:"iduser" json:"iduser"`
 }
 
 type LanggananResponse struct {

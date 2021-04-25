@@ -18,14 +18,15 @@ func GetMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var user model.User
 	var users []model.User
+	var langganan model.Langganan
 
 	email := r.Form.Get("email")
-	if email != "" {
-		db.Where("email = ?", email).First(&users)
-	} else {
-		db.Find(&users).Where("usertype = ?", 1)
-	}
+	db.Where("email", email).First(&user)
+	db.Where("id_user", user.Id).First(&langganan)
+	user.Langganan = langganan
+	users = append(users, user)
 
 	// Set response
 	var response model.UserResponse
@@ -151,12 +152,12 @@ func TangguhkanMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	email := r.Form.Get("email")
+	id := r.Form.Get("id")
 
-	db.Model(model.User{}).Where("email = ?", email).Updates(model.User{Block: 1})
+	db.Model(model.User{}).Where("id = ?", id).Updates(model.User{Block: 1})
 
 	var user model.User
-	db.Where("email = ?", email).First(&user)
+	db.Where("id = ?", id).First(&user)
 
 	var response model.UserResponse
 	if user.Block == 1 {
