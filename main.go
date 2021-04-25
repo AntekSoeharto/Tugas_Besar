@@ -15,24 +15,22 @@ func main() {
 	controller.Migrate()
 
 	router := mux.NewRouter()
-
-	//! ------------- USER
-	// Get User
+	//For ALL
 	router.HandleFunc("/register", controller.Register).Methods("POST")
 	router.HandleFunc("/login", controller.LogIn).Methods("GET")
 	router.HandleFunc("/logout", controller.Logout).Methods("GET")
 
+	//For Admin
 	router.HandleFunc("/users/tangguhkan", controller.Authenticate(controller.TangguhkanMember, 0)).Methods("GET")
 	router.HandleFunc("/users/admin", controller.Authenticate(controller.GetMember, 0)).Methods("GET")
 	router.HandleFunc("/films/admin", controller.Authenticate(controller.InsertFilm, 0)).Methods("POST")
 	router.HandleFunc("/films/admin", controller.Authenticate(controller.GetFilmsbyAdmin, 0)).Methods("GET")
 	router.HandleFunc("/films/admin", controller.Authenticate(controller.UpdateFilm, 0)).Methods("PUT")
 
+	//For User
 	router.HandleFunc("/users", controller.Authenticate(controller.UpdateProfile, 1)).Methods("PUT")
 	router.HandleFunc("/films", controller.Authenticate(controller.FindFilms, 1)).Methods("GET")
-
 	router.HandleFunc("/riwayatuser", controller.Authenticate(controller.GetRiwayatUser, 1)).Methods("GET")
-
 	router.HandleFunc("/langganan", controller.Authenticate(controller.InsertLangganan, 1)).Methods("POST")
 	router.HandleFunc("/stop-langganan", controller.Authenticate(controller.StopMembership, 1)).Methods("GET")
 	// router.HandleFunc("/langganan", controller.Authenticate(controller.GetLangganan, 0)).Methods("GET")

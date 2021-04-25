@@ -166,34 +166,127 @@ func FindFilms(w http.ResponseWriter, r *http.Request) {
 
 	var films []model.Film
 
-	judul := r.Form.Get("judul")
-	sutradara := r.Form.Get("sutradara")
-	tahunrilis, _ := strconv.Atoi(r.Form.Get("tahunrilis"))
+	var judul string = ""
+	var sutradara string = ""
+	judul += r.Form.Get("judul")
+	sutradara += r.Form.Get("sutradara")
+	tahunrilis := r.Form.Get("tahunrilis")
 	sinopsis := r.Form.Get("sinopsis")
 	daftarpemain := r.Form.Get("daftarpemain")
+	var query string
 
 	if judul != "" {
-		db.Where("judul LIKE ?", "%"+judul+"%").Find(&films)
-	} else {
+		query += "judul LIKE " + "'%" + judul + "%'"
 		if sutradara != "" {
-			db.Where("sutradara LIKE ?", "%"+sutradara+"%").Find(&films)
-		} else {
-			if tahunrilis != 0 {
-				db.Where("tahun_rilis = ?", tahunrilis).Find(&films)
-			} else {
+			query += " AND sutradara LIKE " + "'%" + sutradara + "%'"
+			if tahunrilis != "" {
+				query += " AND tahun_rilis = " + tahunrilis
 				if sinopsis != "" {
-					db.Where("sinopsis LIKE ?", "%"+sinopsis+"%").Find(&films)
+					query += " AND sinopsis LIKE " + "'%" + sinopsis + "%'"
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
 				} else {
 					if daftarpemain != "" {
-						db.Where("daftar_pemain LIKE ?", "%"+daftarpemain+"%").Find(&films)
-					} else {
-						db.Find(&films)
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				}
+			} else {
+				if sinopsis != "" {
+					query += "sinopsis LIKE " + "'%" + sinopsis + "%'"
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				} else {
+					if daftarpemain != "" {
+						query += "daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				}
+
+			}
+		} else {
+			if tahunrilis != "" {
+				query += "tahun_rilis = " + tahunrilis
+				if sinopsis != "" {
+					query += " AND sinopsis LIKE " + "'%" + sinopsis + "%'"
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				} else {
+					if daftarpemain != "" {
+						query += " daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				}
+			} else {
+				if sinopsis != "" {
+					query += " sinopsis LIKE " + "'%" + sinopsis + "%'"
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				} else {
+					if daftarpemain != "" {
+						query += " daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				}
+			}
+		}
+	} else {
+		if sutradara != "" {
+			query += " sutradara LIKE " + "'%" + sutradara + "%'"
+			if tahunrilis != "" {
+				query += " AND tahun_rilis = " + tahunrilis
+				if sinopsis != "" {
+					query += " AND sinopsis LIKE " + "'%" + sinopsis + "%'"
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				} else {
+					if daftarpemain != "" {
+						query += " daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				}
+			} else {
+				if sinopsis != "" {
+					query += " inopsis LIKE " + "'%" + sinopsis + "%'"
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				} else {
+					if daftarpemain != "" {
+						query += " daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				}
+
+			}
+		} else {
+			if tahunrilis != "" {
+				query += " AND tahun_rilis = " + tahunrilis
+				if sinopsis != "" {
+					query += " AND sinopsis LIKE " + "'%" + sinopsis + "%'"
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				} else {
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				}
+			} else {
+				if sinopsis != "" {
+					query += " AND sinopsis LIKE " + "'%" + sinopsis + "%'"
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
+					}
+				} else {
+					if daftarpemain != "" {
+						query += " AND daftar_pemain LIKE " + "'%" + daftarpemain + "%'"
 					}
 				}
 			}
 		}
 	}
 
+	db.Where(query).Find(&films)
 	// Set response
 	var response model.FilmResponse
 	if len(films) > 0 {

@@ -25,7 +25,7 @@ func InsertLangganan(w http.ResponseWriter, r *http.Request) {
 	nomorKredit := r.Form.Get("nomorKredit")
 	masaBerlaku := r.Form.Get("masaBerlaku")
 	kodeCVC, _ := strconv.Atoi(r.Form.Get("kodeCVC"))
-	memberType := r.Form.Get("memberType")
+	memberType, _ := strconv.Atoi(r.Form.Get("kodeCVC"))
 
 	// Set inputted data to object
 	langganan := model.Langganan{
