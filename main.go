@@ -33,7 +33,8 @@ func main() {
 	router.HandleFunc("/riwayatuser", controller.Authenticate(controller.GetRiwayatUser, 1)).Methods("GET")
 	router.HandleFunc("/langganan", controller.Authenticate(controller.InsertLangganan, 1)).Methods("POST")
 	router.HandleFunc("/stop-langganan", controller.Authenticate(controller.StopMembership, 1)).Methods("GET")
-	// router.HandleFunc("/langganan", controller.Authenticate(controller.GetLangganan, 0)).Methods("GET")
+
+	router.HandleFunc("/nonton/{film_id}", controller.Authenticate(controller.NontonFilm, 1)).Methods("GET")
 
 	fmt.Println("Connected to port 9099")
 	log.Fatal(http.ListenAndServe(":9099", router))
