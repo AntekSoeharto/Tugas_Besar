@@ -49,30 +49,6 @@ func InsertLangganan(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetLangganan(w http.ResponseWriter, r *http.Request) {
-	db := connect()
-	//defer db.Close()
-
-	err := r.ParseForm()
-	if err != nil {
-		return
-	}
-
-	var langganan []model.Langganan
-
-	id := getid(r)
-	db.Where("id_user = ", id).First(&langganan)
-
-	// Set response
-	if langganan != nil {
-		// Output to console
-		sendResponse(w, 200, "Success Get Data", langganan)
-	} else {
-		// Output to console
-		sendResponse(w, 204, "Not Found, No Content", nil)
-	}
-}
-
 func StopMembership(w http.ResponseWriter, r *http.Request) {
 	db := connect()
 	//defer db.Close()

@@ -1,11 +1,10 @@
 package controller
 
 import (
-	"fmt"
-
 	"net/http"
 
 	"github.com/Tugas_Besar/model"
+	"gorm.io/gorm"
 )
 
 func GetMember(w http.ResponseWriter, r *http.Request) {
@@ -17,23 +16,25 @@ func GetMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user model.User
-	var users []model.User
-	var langganan model.Langganan
-
 	email := r.Form.Get("email")
-	db.Where("email", email).First(&user)
-	db.Where("id_user", user.ID).First(&langganan)
-	user.Langganan = langganan
-	users = append(users, user)
+
+	var users []model.User
+	var result *gorm.DB
+	if email != "" {
+		result = db.Where("email = ?", email).Preload("Langganan").First(&users)
+	} else {
+		result = db.Find(&users)
+	}
 
 	// Set response
-	if len(users) > 0 {
+	if result.Error != nil {
 		// Output to console
-		sendResponse(w, 200, "Success Get User Data", users)
-	} else {
+		sendResponse(w, 400, "Query Failed", nil)
+	} else if len(users) < 1 {
 		// Output to console
 		sendResponse(w, 204, "Not Found, No Content", nil)
+	} else {
+		sendResponse(w, 200, "Success Get User Data", users)
 	}
 }
 
@@ -53,7 +54,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	tgllahir := r.Form.Get("tgllahir")
 	jeniskelamin := r.Form.Get("jeniskelamin")
 	asalnegara := r.Form.Get("asalnegara")
-	usertype := 1
 
 	// Set inputted data to object
 	user := model.User{
@@ -63,7 +63,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		TglLahir:     tgllahir,
 		JenisKelamin: jeniskelamin,
 		AsalNegara:   asalnegara,
-		UserType:     usertype,
+		UserType:     1,
 	}
 
 	// Insert object to database
@@ -92,27 +92,23 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 	password := r.Form.Get("password")
 
 	var user model.User
-
-	// We can chaining method like this
-	db.Where("email = ? and password = ?", email, password).First(&user)
+	result := db.Where("email = ? and password = ?", email, password).First(&user)
 
 	// Set response
-	if user.Block == 1 {
-		sendResponse(w, 400, "Akun Anda Sedang Ditangguhkan", nil)
+	if result.Error != nil {
+		sendResponse(w, 400, "Query Failed", nil)
+	} else if user.ID == 0 {
+		sendResponse(w, 204, "No Content (Email and Password doesn't match)", nil)
+	} else if user.Block == 1 {
+		sendResponse(w, 403, "Akun Anda Sedang Ditangguhkan", nil)
 	} else {
-		if user.Email != "" {
-			generateToken(w, user.ID, user.Nama, user.UserType)
-			fmt.Println(user.UserType + 7)
-			sendResponse(w, 200, "Success Login", nil)
-		} else {
-			sendResponse(w, 204, "No Content (Email and Password doesn't match)", nil)
-		}
+		generateToken(w, user.ID, user.Nama, user.UserType)
+		sendResponse(w, 200, "Success Login", nil)
 	}
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
 	resetUsersToken(w)
-
 	sendResponse(w, 200, "Log-Out Success", nil)
 }
 
@@ -127,12 +123,9 @@ func TangguhkanMember(w http.ResponseWriter, r *http.Request) {
 
 	id := r.Form.Get("id")
 
-	db.Model(model.User{}).Where("id = ?", id).Updates(model.User{Block: 1})
+	result := db.Model(model.User{}).Where("id = ?", id).Updates(model.User{Block: 1})
 
-	var user model.User
-	db.Where("id = ?", id).First(&user)
-
-	if user.Block == 1 {
+	if result.Error != nil {
 		sendResponse(w, 200, "Berhasil Menangguhkan", nil)
 	} else {
 		sendResponse(w, 400, "Gagal Menangguhkan", nil)
@@ -156,20 +149,11 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	tgllahir := r.Form.Get("tgllahir")
 	jeniskelamin := r.Form.Get("jeniskelamin")
 
-	if nama != user.Nama {
-		db.Model(model.User{}).Where("id = ?", id).Updates(model.User{Nama: nama})
-	}
-	if tgllahir != user.TglLahir {
-		db.Model(model.User{}).Where("id = ?", id).Updates(model.User{TglLahir: tgllahir})
-	}
-	if jeniskelamin != user.JenisKelamin {
-		db.Model(model.User{}).Where("id = ?", id).Updates(model.User{JenisKelamin: jeniskelamin})
-	}
+	result := db.Model(&user).Where("id = ?", id).Updates(model.User{Nama: nama, TglLahir: tgllahir, JenisKelamin: jeniskelamin})
 
-	db.Where("id = ?", id).First(&user)
-	if user.Nama == nama || user.TglLahir == tgllahir || user.JenisKelamin == jeniskelamin {
+	if result.Error == nil {
 		sendResponse(w, 200, "Success Update Data", nil)
 	} else {
-		sendResponse(w, 200, "Success Update Data", nil)
+		sendResponse(w, 400, "Failure Update Data", nil)
 	}
 }
