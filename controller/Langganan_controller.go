@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"strconv"
 	"time"
 
@@ -41,19 +40,13 @@ func InsertLangganan(w http.ResponseWriter, r *http.Request) {
 	result := db.Create(&langganan)
 
 	// Set response
-	var response model.LanggananResponse
 	if result.Error == nil {
 		// Output to console
-		response.Status = 200
-		response.Message = "Success Upgrade Membreship"
+		sendResponse(w, 200, "Success Upgrade Membreship", nil)
 	} else {
 		// Output to console
-		response.Status = 400
-		response.Message = "Upgrade Failed"
+		sendResponse(w, 400, "Upgrade Failed", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
 
 func GetLangganan(w http.ResponseWriter, r *http.Request) {
@@ -71,20 +64,13 @@ func GetLangganan(w http.ResponseWriter, r *http.Request) {
 	db.Where("id_user = ", id).First(&langganan)
 
 	// Set response
-	var response model.LanggananResponse
 	if langganan != nil {
 		// Output to console
-		response.Status = 200
-		response.Message = "Success Get Data"
-		response.Data = langganan
+		sendResponse(w, 200, "Success Get Data", langganan)
 	} else {
 		// Output to console
-		response.Status = 204
-		response.Message = "Not Found, No Content"
+		sendResponse(w, 204, "Not Found, No Content", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
 
 func StopMembership(w http.ResponseWriter, r *http.Request) {
@@ -99,15 +85,9 @@ func StopMembership(w http.ResponseWriter, r *http.Request) {
 	var langganan model.Langganan
 	idUser := getid(r)
 
-	var response model.LanggananResponse
 	if err := db.Where("id_user = ?", idUser).Delete(&langganan).Error; err != nil {
-		response.Status = 400
-		response.Message = "Failed Stopping Membership"
+		sendResponse(w, 400, "Failed Stopping Membership", nil)
 	} else {
-		response.Status = 200
-		response.Message = "Success Stopping Membership"
+		sendResponse(w, 200, "Success Stopping Membership", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }

@@ -13,9 +13,3 @@ type Film struct {
 	Filmtype     int    `form:"filmtype" json:"filmtype"`
 	DaftarPemain string `form:"daftarpemain" json:"daftarpemain"`
 }
-
-type FilmResponse struct {
-	Status  int    `form:"status" json:"status"`
-	Message string `form:"message" json:"message"`
-	Data    []Film `form:"data" json:"data"`
-}

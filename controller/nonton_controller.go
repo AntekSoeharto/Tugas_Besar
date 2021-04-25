@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -41,14 +40,4 @@ func NontonFilm(w http.ResponseWriter, r *http.Request) {
 	} else {
 		sendResponse(w, 200, "Sedang Menonton", film)
 	}
-}
-
-func sendResponse(w http.ResponseWriter, status int, msg string, data interface{}) {
-	var response model.ResponseData
-	response.Status = status
-	response.Message = msg
-	response.Data = data
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }

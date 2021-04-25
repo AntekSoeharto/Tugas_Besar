@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -41,19 +40,13 @@ func InsertFilm(w http.ResponseWriter, r *http.Request) {
 	result := db.Create(&film)
 
 	// Set response
-	var response model.FilmResponse
 	if result.Error == nil {
 		// Output to console
-		response.Status = 200
-		response.Message = "Success Insert Film to Database"
+		sendResponse(w, 200, "Success Insert Film to Database", nil)
 	} else {
 		// Output to console
-		response.Status = 400
-		response.Message = "Insert Failed"
+		sendResponse(w, 400, "Insert Failed", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
 
 func GetFilmsbyAdmin(w http.ResponseWriter, r *http.Request) {
@@ -80,20 +73,13 @@ func GetFilmsbyAdmin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Set response
-	var response model.FilmResponse
 	if len(films) > 0 {
 		// Output to console
-		response.Status = 200
-		response.Message = "Success Get User Data"
-		response.Data = films
+		sendResponse(w, 200, "Success Get User Data", films)
 	} else {
 		// Output to console
-		response.Status = 204
-		response.Message = "Not Found, No Content"
+		sendResponse(w, 204, "Not Found, No Content", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
 
 func UpdateFilm(w http.ResponseWriter, r *http.Request) {
@@ -142,17 +128,11 @@ func UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.Where("id = ?", id).First(&film)
-	var response model.FilmResponse
 	if film.Judul == judul || film.Genre == genre || film.Sutradara == sutradara || film.Filmtype == filmtype || film.Sinopsis == sinopsis || film.DaftarPemain == daftarpemain || film.TahunRilis == tahunrilis {
-		response.Status = 200
-		response.Message = "Success Update Data"
+		sendResponse(w, 200, "Success Update Data", nil)
 	} else {
-		response.Status = 400
-		response.Message = "Failed Update Data"
+		sendResponse(w, 400, "Failed Update Data", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
 
 func FindFilms(w http.ResponseWriter, r *http.Request) {
@@ -288,18 +268,11 @@ func FindFilms(w http.ResponseWriter, r *http.Request) {
 
 	db.Where(query).Find(&films)
 	// Set response
-	var response model.FilmResponse
 	if len(films) > 0 {
 		// Output to console
-		response.Status = 200
-		response.Message = "Success Get Films"
-		response.Data = films
+		sendResponse(w, 200, "Success Get Films", films)
 	} else {
 		// Output to console
-		response.Status = 204
-		response.Message = "Not Found, No Content"
+		sendResponse(w, 204, "Not Found, No Content", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }

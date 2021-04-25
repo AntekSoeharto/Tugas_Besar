@@ -14,9 +14,3 @@ type RiwayatUser struct {
 	FilmId  int       `form:"film_id" json:"film_id"`
 	Film    Film      `gorm:"foreignKey:FilmId" form:"film" json:"film"`
 }
-
-type RiwayatUserResponse struct {
-	Status  int           `form:"status" json:"status"`
-	Message string        `form:"message" json:"message"`
-	Data    []RiwayatUser `form:"data" json:"data"`
-}

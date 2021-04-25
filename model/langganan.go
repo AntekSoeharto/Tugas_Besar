@@ -17,9 +17,3 @@ type Langganan struct {
 	Usermember   int       `form:"Usermember" json:"Usermember"`
 	IdUser       int       `form:"iduser" json:"iduser"`
 }
-
-type LanggananResponse struct {
-	Status  int         `form:"status" json:"status"`
-	Message string      `form:"message" json:"mesage"`
-	Data    []Langganan `form:"data" json:"data"`
-}

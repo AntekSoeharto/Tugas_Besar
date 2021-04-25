@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"net/http"
@@ -29,20 +28,13 @@ func GetMember(w http.ResponseWriter, r *http.Request) {
 	users = append(users, user)
 
 	// Set response
-	var response model.UserResponse
 	if len(users) > 0 {
 		// Output to console
-		response.Status = 200
-		response.Message = "Success Get User Data"
-		response.Data = users
+		sendResponse(w, 200, "Success Get User Data", users)
 	} else {
 		// Output to console
-		response.Status = 204
-		response.Message = "Not Found, No Content"
+		sendResponse(w, 204, "Not Found, No Content", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -78,19 +70,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	result := db.Create(&user)
 
 	// Set response
-	var response model.UserResponse
 	if result.Error == nil {
 		// Output to console
-		response.Status = 200
-		response.Message = "Ragister Failed"
+		sendResponse(w, 200, "Register Success", nil)
 	} else {
 		// Output to console
-		response.Status = 400
-		response.Message = "Register Failed"
+		sendResponse(w, 400, "Register Failed", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
 
 func LogIn(w http.ResponseWriter, r *http.Request) {
@@ -111,36 +97,23 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 	db.Where("email = ? and password = ?", email, password).First(&user)
 
 	// Set response
-	var response model.UserResponse
 	if user.Block == 1 {
-		response.Status = 400
-		response.Message = "Akun Anda Sedang Ditangguhkan"
+		sendResponse(w, 400, "Akun Anda Sedang Ditangguhkan", nil)
 	} else {
 		if user.Email != "" {
 			generateToken(w, user.Id, user.Nama, user.Usertype)
 			fmt.Println(user.Usertype + 7)
-			response.Status = 200
-			response.Message = "Success Login"
+			sendResponse(w, 200, "Success Login", nil)
 		} else {
-			response.Status = 204
-			response.Message = "No Content (Email and Password doesn't match)"
+			sendResponse(w, 204, "No Content (Email and Password doesn't match)", nil)
 		}
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	// casting dari type go, ke json
-	json.NewEncoder(w).Encode(response)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
 	resetUsersToken(w)
 
-	var response model.UserResponse
-	response.Status = 200
-	response.Message = "Log-Out Success"
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	sendResponse(w, 200, "Log-Out Success", nil)
 }
 
 func TangguhkanMember(w http.ResponseWriter, r *http.Request) {
@@ -159,17 +132,11 @@ func TangguhkanMember(w http.ResponseWriter, r *http.Request) {
 	var user model.User
 	db.Where("id = ?", id).First(&user)
 
-	var response model.UserResponse
 	if user.Block == 1 {
-		response.Status = 200
-		response.Message = "Berhasil Menangguhkan"
+		sendResponse(w, 200, "Berhasil Menangguhkan", nil)
 	} else {
-		response.Status = 400
-		response.Message = "Gagal Menangguhkan"
+		sendResponse(w, 400, "Gagal Menangguhkan", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
 
 func UpdateProfile(w http.ResponseWriter, r *http.Request) {
@@ -200,24 +167,9 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.Where("id = ?", id).First(&user)
-	var response model.FilmResponse
 	if user.Nama == nama || user.TglLahir == tgllahir || user.Jeniskelamin == jeniskelamin {
-		response.Status = 200
-		response.Message = "Success Update Data"
+		sendResponse(w, 200, "Success Update Data", nil)
 	} else {
-		response.Status = 200
-		response.Message = "Success Update Data"
+		sendResponse(w, 200, "Success Update Data", nil)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
-}
-
-func sendUnAuthorizedResponse(w http.ResponseWriter) {
-	var response model.UserResponse
-	response.Status = 401
-	response.Message = "Unauthorized Access"
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }

@@ -18,9 +18,3 @@ type User struct {
 	RiwayatUsers []RiwayatUser `gorm:"foreignKey:UserId"`
 	Langganan    Langganan     `gorm:"foreignKey:IdUser"`
 }
-
-type UserResponse struct {
-	Status  int    `form:"status" json:"status"`
-	Message string `form:"message" json:"message"`
-	Data    []User `form:"data" json:"data"`
-}
