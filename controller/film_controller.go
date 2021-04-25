@@ -30,7 +30,7 @@ func InsertFilm(w http.ResponseWriter, r *http.Request) {
 		Judul:        judul,
 		Genre:        genre,
 		Sutradara:    sutradara,
-		Filmtype:     filmtype,
+		FilmType:     filmtype,
 		Sinopsis:     sinopsis,
 		DaftarPemain: daftarpemain,
 		TahunRilis:   tahunrilis,
@@ -114,8 +114,8 @@ func UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	if sutradara != film.Sutradara && sutradara != "" {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{Sutradara: sutradara})
 	}
-	if filmtype != film.Filmtype && filmtype != 0 {
-		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{Filmtype: filmtype})
+	if filmtype != film.FilmType && filmtype != 0 {
+		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{FilmType: filmtype})
 	}
 	if sinopsis != film.Sinopsis && sinopsis != "" {
 		db.Model(model.Film{}).Where("id = ?", id).Updates(model.Film{Sinopsis: sinopsis})
@@ -128,7 +128,7 @@ func UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.Where("id = ?", id).First(&film)
-	if film.Judul == judul || film.Genre == genre || film.Sutradara == sutradara || film.Filmtype == filmtype || film.Sinopsis == sinopsis || film.DaftarPemain == daftarpemain || film.TahunRilis == tahunrilis {
+	if film.Judul == judul || film.Genre == genre || film.Sutradara == sutradara || film.FilmType == filmtype || film.Sinopsis == sinopsis || film.DaftarPemain == daftarpemain || film.TahunRilis == tahunrilis {
 		sendResponse(w, 200, "Success Update Data", nil)
 	} else {
 		sendResponse(w, 400, "Failed Update Data", nil)

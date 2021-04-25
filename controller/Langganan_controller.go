@@ -32,7 +32,7 @@ func InsertLangganan(w http.ResponseWriter, r *http.Request) {
 		MasaBerlaku:  masaBerlaku,
 		KodeCVC:      kodeCVC,
 		TanggalHabis: time.Now().AddDate(0, 1, 0),
-		Usermember:   memberType,
+		UserMember:   memberType,
 		IdUser:       idUser,
 	}
 

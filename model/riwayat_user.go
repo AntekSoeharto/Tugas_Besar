@@ -8,7 +8,7 @@ import (
 
 type RiwayatUser struct {
 	gorm.Model
-	Id      int       `gorm:"primaryKey;autoincrement" form:"id" json:"id"`
+	ID      int       `gorm:"primaryKey;autoincrement" form:"id" json:"id"`
 	Tanggal time.Time `form:"tanggal" json:"tanggal"`
 	UserId  int       `form:"user_id" json:"user_id"`
 	FilmId  int       `form:"film_id" json:"film_id"`

@@ -8,12 +8,11 @@ import (
 
 type Langganan struct {
 	gorm.Model
-	Id           int `gorm:" primaryKey;autoincrement" form:"id" json:"id"`
-	Deleted      gorm.DeletedAt
-	NomorKredit  string    `form:"nomorKredit" json:"nomorKredit"`
-	MasaBerlaku  string    `form:"masaBerlaku" json:"masaBerlaku"`
-	KodeCVC      int       `form:"kodeCVC" json:"kodeCVC"`
-	TanggalHabis time.Time `form:"tanggalHabis" json:"tanggalHabis"`
-	Usermember   int       `form:"Usermember" json:"Usermember"`
-	IdUser       int       `form:"iduser" json:"iduser"`
+	ID           int       `gorm:" primaryKey;autoincrement" form:"id" json:"id"`
+	NomorKredit  string    `form:"nomor_kredit" json:"nomor_kredit`
+	MasaBerlaku  string    `form:"masa_berlaku" json:"masa_berlaku`
+	KodeCVC      int       `form:"kode_CVC" json:"kode_CVC`
+	TanggalHabis time.Time `form:"tanggal_habis" json:"tanggal_habi"`
+	UserMember   int       `form:"user_member" json:"user_member`
+	IdUser       int       `form:"id_user" json:"id_user`
 }

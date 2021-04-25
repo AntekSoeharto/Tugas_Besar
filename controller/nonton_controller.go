@@ -23,7 +23,7 @@ func NontonFilm(w http.ResponseWriter, r *http.Request) {
 	userId := getid(r)
 	var user model.User
 	db.Model(model.User{}).Where("id=?", userId).First(&user)
-	if film.Filmtype > user.Langganan.Usermember {
+	if film.FilmType > user.Langganan.UserMember {
 		sendResponse(w, 401, "Butuh Langganan Lebih Tinggi", nil)
 		return
 	}
@@ -31,7 +31,7 @@ func NontonFilm(w http.ResponseWriter, r *http.Request) {
 	riwayat := model.RiwayatUser{
 		Tanggal: time.Now().UTC(),
 		UserId:  userId,
-		FilmId:  film.Id,
+		FilmId:  film.ID,
 		Film:    film,
 	}
 

@@ -23,7 +23,7 @@ func GetMember(w http.ResponseWriter, r *http.Request) {
 
 	email := r.Form.Get("email")
 	db.Where("email", email).First(&user)
-	db.Where("id_user", user.Id).First(&langganan)
+	db.Where("id_user", user.ID).First(&langganan)
 	user.Langganan = langganan
 	users = append(users, user)
 
@@ -61,9 +61,9 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		Email:        email,
 		Password:     password,
 		TglLahir:     tgllahir,
-		Jeniskelamin: jeniskelamin,
-		Asalnegara:   asalnegara,
-		Usertype:     usertype,
+		JenisKelamin: jeniskelamin,
+		AsalNegara:   asalnegara,
+		UserType:     usertype,
 	}
 
 	// Insert object to database
@@ -101,8 +101,8 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 		sendResponse(w, 400, "Akun Anda Sedang Ditangguhkan", nil)
 	} else {
 		if user.Email != "" {
-			generateToken(w, user.Id, user.Nama, user.Usertype)
-			fmt.Println(user.Usertype + 7)
+			generateToken(w, user.ID, user.Nama, user.UserType)
+			fmt.Println(user.UserType + 7)
 			sendResponse(w, 200, "Success Login", nil)
 		} else {
 			sendResponse(w, 204, "No Content (Email and Password doesn't match)", nil)
@@ -162,12 +162,12 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	if tgllahir != user.TglLahir {
 		db.Model(model.User{}).Where("id = ?", id).Updates(model.User{TglLahir: tgllahir})
 	}
-	if jeniskelamin != user.Jeniskelamin {
-		db.Model(model.User{}).Where("id = ?", id).Updates(model.User{Jeniskelamin: jeniskelamin})
+	if jeniskelamin != user.JenisKelamin {
+		db.Model(model.User{}).Where("id = ?", id).Updates(model.User{JenisKelamin: jeniskelamin})
 	}
 
 	db.Where("id = ?", id).First(&user)
-	if user.Nama == nama || user.TglLahir == tgllahir || user.Jeniskelamin == jeniskelamin {
+	if user.Nama == nama || user.TglLahir == tgllahir || user.JenisKelamin == jeniskelamin {
 		sendResponse(w, 200, "Success Update Data", nil)
 	} else {
 		sendResponse(w, 200, "Success Update Data", nil)
