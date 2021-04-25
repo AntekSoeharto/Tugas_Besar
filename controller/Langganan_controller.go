@@ -21,10 +21,17 @@ func InsertLangganan(w http.ResponseWriter, r *http.Request) {
 
 	// Get data from user
 	idUser := getid(r)
+	// Cek sedang langganan
+	var user model.User
+	if db.Where("id = ?", idUser).Preload("Langganan").First(&user); user.Langganan.ID != 0 {
+		sendResponse(w, 200, "Masih dalam langganan", user.Langganan)
+		return
+	}
+
 	nomorKredit := r.Form.Get("nomorKredit")
 	masaBerlaku := r.Form.Get("masaBerlaku")
 	kodeCVC, _ := strconv.Atoi(r.Form.Get("kodeCVC"))
-	memberType, _ := strconv.Atoi(r.Form.Get("kodeCVC"))
+	memberType, _ := strconv.Atoi(r.Form.Get("memberType"))
 
 	// Set inputted data to object
 	langganan := model.Langganan{

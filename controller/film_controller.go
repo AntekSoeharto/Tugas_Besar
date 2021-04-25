@@ -66,7 +66,7 @@ func GetFilmsbyAdmin(w http.ResponseWriter, r *http.Request) {
 
 	var result *gorm.DB
 	if judul != "" {
-		result = db.Where("judul = ?", judul).First(&films)
+		result = db.Where("judul LIKE ?", "%"+judul+"%").Find(&films)
 	} else if id != "" {
 		result = db.Where("id = ?", id).First(&films)
 	} else {
@@ -76,12 +76,9 @@ func GetFilmsbyAdmin(w http.ResponseWriter, r *http.Request) {
 	// Set response
 	if result.Error != nil {
 		sendResponse(w, 400, "Query Failed", nil)
-	} else if len(films) > 0 {
-		// Output to console
-		sendResponse(w, 200, "Success Get User Data", films)
 	} else {
 		// Output to console
-		sendResponse(w, 204, "Not Found, No Content", nil)
+		sendResponse(w, 200, "Success Get User Data", films)
 	}
 }
 
@@ -126,6 +123,7 @@ func FindFilms(w http.ResponseWriter, r *http.Request) {
 	judul := r.Form.Get("judul")
 	sutradara := r.Form.Get("sutradara")
 	tahunrilis := r.Form.Get("tahunrilis")
+	genre := r.Form.Get("genre")
 	sinopsis := r.Form.Get("sinopsis")
 	daftarpemain := r.Form.Get("daftarpemain")
 	query := ""
@@ -149,15 +147,22 @@ func FindFilms(w http.ResponseWriter, r *http.Request) {
 		query += "tahun_rilis = " + tahunrilis
 	}
 
-	if sinopsis != "" {
+	if genre != "" {
 		if judul != "" || sutradara != "" || tahunrilis != "" {
+			query += " AND "
+		}
+		query += "genre = " + genre
+	}
+
+	if sinopsis != "" {
+		if judul != "" || sutradara != "" || tahunrilis != "" || genre != "" {
 			query += " AND "
 		}
 		query += "sinopsis LIKE '%" + sinopsis + "%'"
 	}
 
 	if daftarpemain != "" {
-		if judul != "" || sutradara != "" || tahunrilis != "" || sinopsis != "" {
+		if judul != "" || sutradara != "" || tahunrilis != "" || genre != "" || sinopsis != "" {
 			query += " AND "
 		}
 		query += "daftar_pemain LIKE '%" + daftarpemain + "%'"
@@ -168,11 +173,8 @@ func FindFilms(w http.ResponseWriter, r *http.Request) {
 	// Set response
 	if result.Error != nil {
 		sendResponse(w, 400, "Query Failed", nil)
-	} else if len(films) > 0 {
-		// Output to console
-		sendResponse(w, 200, "Success Get Films", films)
 	} else {
 		// Output to console
-		sendResponse(w, 204, "Not Found, No Content", nil)
+		sendResponse(w, 200, "Success Get Films", films)
 	}
 }

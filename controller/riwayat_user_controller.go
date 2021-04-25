@@ -16,8 +16,6 @@ func GetRiwayatUser(w http.ResponseWriter, r *http.Request) {
 	// Get RiwayatUser Query
 	if err := db.Where("user_id = ?", getid(r)).Preload("Film").Find(&riwayatUsers).Error; err != nil {
 		sendResponse(w, 400, "Failed to Query", nil)
-	} else if len(riwayatUsers) == 0 {
-		sendResponse(w, 204, "Not Found, No Content", nil)
 	} else {
 		sendResponse(w, 200, "Query Success", riwayatUsers)
 	}
@@ -31,7 +29,7 @@ func NontonFilm(w http.ResponseWriter, r *http.Request) {
 
 	var film model.Film
 	if err := db.Where("id = ?", filmId).First(&film).Error; err != nil {
-		sendResponse(w, 204, "Not Found, No Content", nil)
+		sendResponse(w, 400, "Not Found", nil)
 		return
 	}
 

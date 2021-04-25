@@ -21,18 +21,15 @@ func GetMember(w http.ResponseWriter, r *http.Request) {
 	var users []model.User
 	var result *gorm.DB
 	if email != "" {
-		result = db.Where("email = ?", email).Preload("Langganan").First(&users)
+		result = db.Where("user_type = 1 AND email = ?", email).Preload("Langganan").First(&users)
 	} else {
-		result = db.Find(&users)
+		result = db.Where("user_type = 1").Preload("Langganan").Find(&users)
 	}
 
 	// Set response
 	if result.Error != nil {
 		// Output to console
 		sendResponse(w, 400, "Query Failed", nil)
-	} else if len(users) < 1 {
-		// Output to console
-		sendResponse(w, 204, "Not Found, No Content", nil)
 	} else {
 		sendResponse(w, 200, "Success Get User Data", users)
 	}
@@ -97,8 +94,6 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 	// Set response
 	if result.Error != nil {
 		sendResponse(w, 400, "Query Failed", nil)
-	} else if user.ID == 0 {
-		sendResponse(w, 204, "No Content (Email and Password doesn't match)", nil)
 	} else if user.Block == 1 {
 		sendResponse(w, 403, "Akun Anda Sedang Ditangguhkan", nil)
 	} else {
@@ -125,7 +120,7 @@ func TangguhkanMember(w http.ResponseWriter, r *http.Request) {
 
 	result := db.Model(model.User{}).Where("id = ?", id).Updates(model.User{Block: 1})
 
-	if result.Error != nil {
+	if result.Error == nil {
 		sendResponse(w, 200, "Berhasil Menangguhkan", nil)
 	} else {
 		sendResponse(w, 400, "Gagal Menangguhkan", nil)
@@ -143,7 +138,6 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 
 	var user model.User
 	id := getid(r)
-	db.Where("id = ?", id).First(&user)
 
 	nama := r.Form.Get("nama")
 	tgllahir := r.Form.Get("tgllahir")
